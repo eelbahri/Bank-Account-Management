@@ -18,7 +18,8 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     public Optional<BankAccount> checkAccountAmount(String id) {
-        return this.cache.stream().filter(b -> b.getId().equalsIgnoreCase(id)).findFirst();
+        // return this.cache.stream().filter(b -> b.getId().equalsIgnoreCase(id)).findFirst();
+        return Optional.empty();
     }
 
     @Override

@@ -24,3 +24,11 @@ hs_err_pid*
 
 # IDE
 .idea
+.classpath
+.factorypath
+.project
+.settings
+.target
+
+# Build
+target
