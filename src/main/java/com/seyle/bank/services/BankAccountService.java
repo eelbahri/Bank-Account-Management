@@ -7,9 +7,15 @@ import java.util.Optional;
 
 public interface BankAccountService {
 
-    void create(String owner, Double amount);
-    Optional<BankAccount> checkAccountAmount(String id);
-    void withdraw(String id, Double amount) throws Exception;
-    void deposit(String id, Double amount) throws Exception;
+    BankAccount create(String owner, Double amount);
+
     Collection<BankAccount> getAll();
+
+    Optional<BankAccount> checkAccountAmount(String id);
+
+    BankAccount withdraw(String id, Double amount) throws BankAccountException;
+
+    BankAccount deposit(String id, Double amount) throws BankAccountException;
+
+    void transfer(String idPayer, String idPayee, Double amount) throws BankAccountException;
 }
