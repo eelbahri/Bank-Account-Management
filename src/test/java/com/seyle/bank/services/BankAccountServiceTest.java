@@ -2,16 +2,12 @@ package com.seyle.bank.services;
 
 import com.seyle.bank.models.AccountHistory;
 import com.seyle.bank.models.BankAccount;
-import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Collection;
-import java.util.Optional;
 
 public class BankAccountServiceTest {
 

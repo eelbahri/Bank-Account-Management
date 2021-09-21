@@ -57,7 +57,7 @@ public class BankAccountController {
         try {
             this.bankAccountService.transfer(idPayer, idPayee, amount);
             return "Transfer successful";
-        } catch(BankAccountException e) {
+        } catch (BankAccountException e) {
             return e.getMessage();
         }
     }

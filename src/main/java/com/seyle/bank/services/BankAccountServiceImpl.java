@@ -4,10 +4,9 @@ import com.google.common.collect.Lists;
 import com.seyle.bank.models.AccountHistory;
 import com.seyle.bank.models.ActionType;
 import com.seyle.bank.models.BankAccount;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
