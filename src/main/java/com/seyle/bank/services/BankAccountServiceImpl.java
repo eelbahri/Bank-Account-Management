@@ -1,11 +1,15 @@
 package com.seyle.bank.services;
 
 import com.google.common.collect.Lists;
+import com.seyle.bank.models.AccountHistory;
+import com.seyle.bank.models.ActionType;
 import com.seyle.bank.models.BankAccount;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -18,11 +22,14 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public BankAccount create(String owner, Double amount) {
         BankAccount newAccount = BankAccount.builder()
-            .owner(owner)
-            .amount(amount)
-            .build();
+                .owner(owner)
+                .amount(amount)
+                .build();
         log.info("New Account added in cache : {}", newAccount.toString());
         this.cache.add(newAccount);
+        if (amount > 0) {
+            this.addHistory(ActionType.DEPOSIT, newAccount.getId(), amount, null);
+        }
         return newAccount;
     }
 
@@ -44,6 +51,7 @@ public class BankAccountServiceImpl implements BankAccountService {
             }
             bankAccount.withdraw(amount);
             log.info("Account {} has now {}", id, bankAccount.getAmount());
+            this.addHistory(ActionType.WITHDRAWAL, id, amount, null);
             return bankAccount;
         } else {
             log.error("Bank account with id {} has not been found", id);
@@ -59,6 +67,7 @@ public class BankAccountServiceImpl implements BankAccountService {
             BankAccount bankAccount = optAccount.get();
             bankAccount.deposit(amount);
             log.info("Account {} has now {}", id, bankAccount.getAmount());
+            this.addHistory(ActionType.DEPOSIT, id, amount, null);
             return bankAccount;
         } else {
             log.error("Bank account with id {} has not been found", id);
@@ -80,12 +89,34 @@ public class BankAccountServiceImpl implements BankAccountService {
         if (payerAccount.isPresent() && payeeAccount.isPresent()) {
             if (payerAccount.get().getAmount() > amount) {
                 payerAccount.get().withdraw(amount);
+                this.addHistory(ActionType.TRANSFER_TO, idPayer, amount, idPayee);
+
                 payeeAccount.get().deposit(amount);
+                this.addHistory(ActionType.TRANSFER_FROM, idPayee, amount, idPayer);
             } else {
                 throw new BankAccountException("Payer account has not enough money, please make a deposit");
             }
         } else {
             throw new BankAccountException("Accounts were not found.");
         }
+    }
+
+    @Override
+    public Collection<AccountHistory> getHistory(String id) {
+        Optional<BankAccount> bankAccount = this.cache.stream().filter(b -> b.getId().equalsIgnoreCase(id)).findFirst();
+        if (bankAccount.isPresent()) {
+            return bankAccount.get().getHistory();
+        }
+        return Lists.newArrayList();
+    }
+
+    private void addHistory(ActionType actionType, String id, Double amount, @Nullable String relatedAccount) {
+        Optional<BankAccount> bankAccount = this.cache.stream().filter(b -> b.getId().equalsIgnoreCase(id)).findFirst();
+        bankAccount.ifPresent(account -> account.addHistory(AccountHistory.builder()
+                .actionType(actionType)
+                .doneAt(LocalDateTime.now())
+                .amount(amount)
+                .relatedAccount(relatedAccount)
+                .build()));
     }
 }

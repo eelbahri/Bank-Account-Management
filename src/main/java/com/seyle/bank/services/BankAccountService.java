@@ -1,5 +1,6 @@
 package com.seyle.bank.services;
 
+import com.seyle.bank.models.AccountHistory;
 import com.seyle.bank.models.BankAccount;
 
 import java.util.Collection;
@@ -18,4 +19,6 @@ public interface BankAccountService {
     BankAccount deposit(String id, Double amount) throws BankAccountException;
 
     void transfer(String idPayer, String idPayee, Double amount) throws BankAccountException;
+
+    Collection<AccountHistory> getHistory(String id);
 }

@@ -1,5 +1,6 @@
 package com.seyle.bank.controllers;
 
+import com.seyle.bank.models.AccountHistory;
 import com.seyle.bank.models.BankAccount;
 import com.seyle.bank.services.BankAccountException;
 import com.seyle.bank.services.BankAccountService;
@@ -59,5 +60,11 @@ public class BankAccountController {
         } catch(BankAccountException e) {
             return e.getMessage();
         }
+    }
+
+    @GetMapping(value = "/getHistory/{id}")
+    @ResponseBody
+    public Collection<AccountHistory> getHistory(@PathVariable String id) {
+        return this.bankAccountService.getHistory(id);
     }
 }

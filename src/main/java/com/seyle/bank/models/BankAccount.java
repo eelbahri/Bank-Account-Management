@@ -31,4 +31,8 @@ public class BankAccount {
     public void withdraw(Double withdrawAmount) {
         this.amount -= withdrawAmount;
     }
+
+    public void addHistory(AccountHistory history) {
+        this.history.add(history);
+    }
 }
