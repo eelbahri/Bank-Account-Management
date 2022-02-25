@@ -18,17 +18,17 @@ public class BankAccount {
 
     private String owner;
 
-    private Double amount;
-
+    private Double balance;
+    
     @Builder.Default
     private Collection<AccountHistory> history = Lists.newArrayList();
 
     public void deposit(Double depositAmount) {
-        this.amount += depositAmount;
+        this.balance += depositAmount;
     }
 
     public void withdraw(Double withdrawAmount) {
-        this.amount -= withdrawAmount;
+        this.balance -= withdrawAmount;
     }
 
     public void addHistory(AccountHistory history) {

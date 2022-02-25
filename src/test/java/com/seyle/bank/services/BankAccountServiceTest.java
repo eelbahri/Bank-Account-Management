@@ -31,20 +31,20 @@ public class BankAccountServiceTest {
     @Test
     public void testSuccessfulDeposit() throws BankAccountException {
         BankAccount ba = this.bankAccountService.create("Foo", 1500d);
-        Double firstAmount = ba.getAmount();
+        Double firstAmount = ba.getBalance();
         Double deposit = 1500d;
         this.bankAccountService.deposit(ba.getId(), deposit);
-        Assertions.assertEquals(ba.getAmount(), firstAmount + deposit);
+        Assertions.assertEquals(ba.getBalance(), firstAmount + deposit);
     }
 
     @Test
-    public void testSuccessfulWithdraw() throws BankAccountException {
+    public void testSuccessfulWithdraw() throws BankAccountException, InsufficientFundException {
         Double initialAmount = 1500d;
         Double withdraw = 1000d;
 
         BankAccount ba = this.bankAccountService.create("Foo", initialAmount);
         this.bankAccountService.withdraw(ba.getId(), withdraw);
-        Assertions.assertEquals(ba.getAmount(), initialAmount - withdraw);
+        Assertions.assertEquals(ba.getBalance(), initialAmount - withdraw);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class BankAccountServiceTest {
     }
 
     @Test
-    public void testSuccessfulTransfer() throws BankAccountException {
+    public void testSuccessfulTransfer() throws Exception {
         Double initialAmount = 1000d;
         BankAccount ba1 = this.bankAccountService.create("Foo", initialAmount);
         BankAccount ba2 = this.bankAccountService.create("Bar", initialAmount);
@@ -67,8 +67,8 @@ public class BankAccountServiceTest {
         Double transferAmount = 500d;
         this.bankAccountService.transfer(ba1.getId(), ba2.getId(), transferAmount);
 
-        Assertions.assertEquals(ba1.getAmount(), initialAmount - transferAmount);
-        Assertions.assertEquals(ba2.getAmount(), initialAmount + transferAmount);
+        Assertions.assertEquals(ba1.getBalance(), initialAmount - transferAmount);
+        Assertions.assertEquals(ba2.getBalance(), initialAmount + transferAmount);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class BankAccountServiceTest {
     }
 
     @Test
-    public void testAddHistory() throws BankAccountException {
+    public void testAddHistory() throws BankAccountException, InsufficientFundException {
         BankAccount ba = this.bankAccountService.create("Foo", 500d);
         this.bankAccountService.deposit(ba.getId(), 500d);
         this.bankAccountService.withdraw(ba.getId(), 1000d);

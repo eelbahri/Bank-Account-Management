@@ -10,15 +10,15 @@ public interface BankAccountService {
 
     BankAccount create(String owner, Double amount);
 
+    void withdraw(String id, Double amount) throws BankAccountException, InsufficientFundException;
+
+    void deposit(String id, Double amount) throws BankAccountException;
+
+    void transfer(String fromAccount, String toAccount, Double amount) throws Exception;
+
     Collection<BankAccount> getAll();
 
     Optional<BankAccount> checkAccountAmount(String id);
 
-    BankAccount withdraw(String id, Double amount) throws BankAccountException;
-
-    BankAccount deposit(String id, Double amount) throws BankAccountException;
-
-    void transfer(String idPayer, String idPayee, Double amount) throws BankAccountException;
-
-    Collection<AccountHistory> getHistory(String id);
+    Collection<AccountHistory> getHistory(String id) throws BankAccountException;
 }

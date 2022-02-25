@@ -4,6 +4,7 @@ import com.seyle.bank.models.AccountHistory;
 import com.seyle.bank.models.BankAccount;
 import com.seyle.bank.services.BankAccountException;
 import com.seyle.bank.services.BankAccountService;
+import com.seyle.bank.services.InsufficientFundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,38 +34,24 @@ public class BankAccountController {
 
     @PostMapping(value = "/deposit/{id}/{amount}")
     @ResponseBody
-    public Object deposit(@PathVariable String id, @PathVariable Double amount) throws BankAccountException {
-        try {
-            return this.bankAccountService.deposit(id, amount);
-        } catch (BankAccountException e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
+    public void deposit(@PathVariable String id, @PathVariable Double amount) throws BankAccountException {
+        this.bankAccountService.deposit(id, amount);
     }
 
     @PostMapping(value = "/withdraw/{id}/{amount}")
     @ResponseBody
-    public Object withdraw(@PathVariable String id, @PathVariable Double amount) throws BankAccountException {
-        try {
-            return this.bankAccountService.withdraw(id, amount);
-        } catch (BankAccountException e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-    }
-
-    @PostMapping(value = "/transfer/{idPayer}/{idPayee}/{amount}")
-    @ResponseBody
-    public String transfer(@PathVariable String idPayer, @PathVariable String idPayee, @PathVariable Double amount) throws BankAccountException {
-        try {
-            this.bankAccountService.transfer(idPayer, idPayee, amount);
-            return "Transfer successful";
-        } catch (BankAccountException e) {
-            return e.getMessage();
-        }
+    public void withdraw(@PathVariable String id, @PathVariable Double amount) throws BankAccountException, InsufficientFundException {
+        this.bankAccountService.withdraw(id, amount);
     }
 
     @GetMapping(value = "/getHistory/{id}")
     @ResponseBody
-    public Collection<AccountHistory> getHistory(@PathVariable String id) {
+    public Collection<AccountHistory> getHistory(@PathVariable String id) throws BankAccountException {
         return this.bankAccountService.getHistory(id);
+    }
+
+    @PostMapping(value = "/transfer/{fromAccountId}/{toAccountId}/{amount}")
+    public void transfer(@PathVariable String fromAccountId, @PathVariable String toAccountId, @PathVariable Double amount) throws Exception {
+        this.bankAccountService.transfer(fromAccountId, toAccountId, amount);
     }
 }
